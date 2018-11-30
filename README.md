@@ -4,10 +4,10 @@ dqueue is a delay queue written in Golang. dqueue was born because the need of a
 A message pushed into dqueue will be stay in dqueue (which stored in database - currently mysql) until delay time reached. Delay time is client defined, in second. Message has following format: 
 
 ```json
-message MessageData {
-    int32 delay = 1;
-    int32 retryCount = 2;
-    string data = 3;
+{
+  "delay": integer,
+  "data": string,
+  "retryCount": integer
 }
 ```
 
@@ -94,6 +94,6 @@ func main() {
 
 ```
 
-#license 
+# License 
 
 BSD License 
