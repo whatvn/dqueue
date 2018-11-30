@@ -1,0 +1,18 @@
+syntax = "proto3";
+package delayQueue;
+
+message QueueRequest {
+	string messsage = 1;
+	int32 retryCount = 2;
+	int32 delay = 3;
+}
+
+message QueueResponse {
+	int64 returnCode = 1;
+	string message = 2;
+}
+
+
+service DelayQueue {
+	rpc Publish (QueueRequest) returns (QueueResponse);
+}

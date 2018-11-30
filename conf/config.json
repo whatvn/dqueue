@@ -1,0 +1,23 @@
+{
+  "queueType": "NATS",
+  "dbType": "mysql",
+  "hosts": {
+    "nats": {
+      "address": "0.0.0.0",
+      "port": "4222"
+    },
+    "stan": {
+      "address": "0.0.0.0",
+      "port": "4222",
+      "clusterID": "test-cluster",
+      "clientID": "evn-worker"
+    },
+    "mysql": {
+      "address": "127.0.0.1",
+      "port": "3306",
+      "user": "root",
+      "password": "123456",
+      "database": "delay_queue"
+    }
+  }
+}

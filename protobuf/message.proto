@@ -1,0 +1,30 @@
+syntax = "proto3";
+package delayQueue;
+
+message MessageReq {
+	string messsage = 1;
+}
+
+message MessageData {
+    int64 timeStamp = 1;
+    int32 delay = 2;
+    int32 retryCount = 3;
+    string data = 4;
+}
+
+message ReturnCommon {
+    int32 returnCode = 1;
+    string message = 2;
+}
+
+message QueryListMessagesResp {
+	int32 returnCode = 1;
+    string message = 2;
+    repeated MessageData msgList = 3;
+}
+
+
+
+service Message {
+    rpc GetAllMessages (MessageReq) returns (QueryListMessagesResp);
+}
