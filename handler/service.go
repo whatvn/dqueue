@@ -25,7 +25,7 @@ func (handler *MicroHandler) Publish(ctx context.Context, request *delayQueue.Qu
 		Delay:      int(request.Delay),
 	}
 
-	_, err := message.AddMessage(newMessage)
+	_, err := message.Add(newMessage)
 	if err != nil {
 		log.Error("cannot add message to database, message: ", newMessage, "error: ", err)
 		response.ReturnCode = message.Fail

@@ -56,7 +56,7 @@ func (md *MessageHandler) GetListMessage(c *gin.Context) {
 		response = &delayQueue.QueryListMessagesResp{}
 	)
 
-	msgList, err := message.GetList(offset, limit)
+	msgList, err := message.List(offset, limit)
 	if err != nil {
 		log.Error("cannot get message list, error: ", err)
 		response.ReturnCode = message.Fail

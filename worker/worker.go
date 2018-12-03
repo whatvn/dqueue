@@ -37,7 +37,7 @@ func NewWorker(queueType string) *Worker {
 func (w *Worker) Run() {
 	for {
 		now := helper.Now()
-		msgList, err := message.GetMessagesByTimeStamp(now)
+		msgList, err := message.ByTime(now)
 		if err != nil {
 			log.Infof("cannot get message from database, error: ", err)
 			time.Sleep(2 * time.Second)
@@ -50,7 +50,7 @@ func (w *Worker) Run() {
 
 			err = w.queue.PublishMessage(data)
 			if err == nil {
-				message.DeleteMessage(msg)
+				message.Delete(msg)
 			}
 		}
 		time.Sleep(200 * time.Millisecond)

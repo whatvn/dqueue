@@ -19,13 +19,13 @@ func init() {
 	orm.RegisterModel(new(Message))
 }
 
-func AddMessage(m *Message) (id int64, err error) {
+func Add(m *Message) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-func GetMessagesByTimeStamp(now int64) (ml []*Message, err error) {
+func ByTime(now int64) (ml []*Message, err error) {
 	o := orm.NewOrm()
 	cond := orm.NewCondition().And("time_stamp__lt", now)
 
@@ -49,7 +49,7 @@ func All() (ml []*Message, err error) {
 	return ml, nil
 }
 
-func GetList(offset int, limit int) (ml []*Message, err error) {
+func List(offset int, limit int) (ml []*Message, err error) {
 	o := orm.NewOrm()
 	_, err = o.QueryTable("message").Offset(offset).Limit(limit).All(&ml)
 	if err != nil && err != orm.ErrNoRows {
@@ -85,7 +85,7 @@ func Force(id int64) (err error) {
 	return
 }
 
-func DeleteMessage(m *Message) error {
+func Delete(m *Message) error {
 	o := orm.NewOrm()
 	num, err := o.Delete(m)
 	if err == nil {
