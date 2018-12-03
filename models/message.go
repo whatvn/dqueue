@@ -71,10 +71,10 @@ func GetMessageListByData(data string) ([]*Message, error) {
 	return msgList, nil
 }
 
-func UpdateTimestampMessage(data string) (err error) {
+func Force(id int64) (err error) {
 	o := orm.NewOrm()
-	msg := Message{Data: data}
-	if err = o.Read(&msg, "Data"); err == nil {
+	msg := Message{Id: id}
+	if err = o.Read(&msg, "id"); err == nil {
 		msg.TimeStamp = helper.Now() - 2
 
 		var num int64
