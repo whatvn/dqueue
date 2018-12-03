@@ -64,6 +64,47 @@ dqueue also has apis to support listing, monitoring, and forcing a message to be
 
 # usage 
 
+Install dqueue
+
+```bash
+go get github.com/whatvn/dqueue
+cd $GOPATH/src/github.com/whatvn/dqueue
+go build main.go
+```
+
+change configuration file according to your system: 
+
+```json
+{
+  "queueType": "NATS",
+  "dbType": "mysql",
+  "hosts": {
+    "nats": {
+      "address": "0.0.0.0",
+      "port": "4222"
+    },
+    "stan": {
+      "address": "0.0.0.0",
+      "port": "4222",
+      "clusterID": "test-cluster",
+      "clientID": "retry-worker"
+    },
+    "mysql": {
+      "address": "127.0.0.1",
+      "port": "3306",
+      "user": "root",
+      "password": "123456",
+      "database": "delay_queue"
+    }
+  }
+}
+```
+where:
+    - **queueType** is queue server backend
+    - **dbType** is intermediate database server, currenly only mysql is supported
+
+
+To publish a message into dqueue
 ```go
 
 package main
@@ -94,6 +135,7 @@ func main() {
 
 ```
 
+To subscribe a message from your queue backend, use queue backend client 
 # License 
 
 BSD License 
