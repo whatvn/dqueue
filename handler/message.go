@@ -7,6 +7,7 @@ import (
 	"github.com/whatvn/dqueue/models"
 	"github.com/whatvn/dqueue/protobuf"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
 )
 
 type MessageHandler struct{}
@@ -110,13 +111,13 @@ func (md *MessageHandler) GetListMessageByData(c *gin.Context) {
 
 func (md *MessageHandler) ForceMessage(c *gin.Context) {
 	log.Info("Received Get force message request")
-	data := c.Param("data")
 
 	var (
 		response = &delayQueue.ReturnCommon{}
 	)
 
-	err := message.UpdateTimestampMessage(data)
+	msgId := cast.ToInt64(c.Param("id"))
+	err := message.Force(msgId)
 	if err != nil {
 		log.Error("cannot update message timestamp, error: ", err)
 		response.ReturnCode = message.Fail
