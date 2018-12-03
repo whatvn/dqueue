@@ -39,7 +39,7 @@ func GetMessagesByTimeStamp(now int64) (ml []*Message, err error) {
 	return ml, nil
 }
 
-func GetAllMessages() (ml []*Message, err error) {
+func All() (ml []*Message, err error) {
 	o := orm.NewOrm()
 	_, err = o.QueryTable("message").All(&ml)
 	if err != nil && err != orm.ErrNoRows {
@@ -49,7 +49,7 @@ func GetAllMessages() (ml []*Message, err error) {
 	return ml, nil
 }
 
-func GetMessageList(offset int, limit int) (ml []*Message, err error) {
+func GetList(offset int, limit int) (ml []*Message, err error) {
 	o := orm.NewOrm()
 	_, err = o.QueryTable("message").Offset(offset).Limit(limit).All(&ml)
 	if err != nil && err != orm.ErrNoRows {
@@ -59,7 +59,7 @@ func GetMessageList(offset int, limit int) (ml []*Message, err error) {
 	return ml, nil
 }
 
-func GetMessageListByData(data string) ([]*Message, error) {
+func SearchBy(data string) ([]*Message, error) {
 	o := orm.NewOrm()
 	var msgList []*Message
 

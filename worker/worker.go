@@ -53,6 +53,6 @@ func (w *Worker) Run() {
 				message.DeleteMessage(msg)
 			}
 		}
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(200 * time.Millisecond)
 	}
 }

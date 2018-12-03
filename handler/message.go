@@ -19,7 +19,7 @@ func (md *MessageHandler) GetAllMessages(c *gin.Context) {
 		response = &delayQueue.QueryListMessagesResp{}
 	)
 
-	msgList, err := message.GetAllMessages()
+	msgList, err := message.All()
 	if err != nil {
 		log.Error("cannot get all message, error: ", err)
 		response.ReturnCode = message.Fail
@@ -56,7 +56,7 @@ func (md *MessageHandler) GetListMessage(c *gin.Context) {
 		response = &delayQueue.QueryListMessagesResp{}
 	)
 
-	msgList, err := message.GetMessageList(offset, limit)
+	msgList, err := message.GetList(offset, limit)
 	if err != nil {
 		log.Error("cannot get message list, error: ", err)
 		response.ReturnCode = message.Fail
@@ -87,7 +87,7 @@ func (md *MessageHandler) GetListMessageByData(c *gin.Context) {
 		response = &delayQueue.QueryListMessagesResp{}
 	)
 
-	msgList, err := message.GetMessageListByData(data)
+	msgList, err := message.SearchBy(data)
 	if err != nil {
 		log.Error("cannot get message by pattern: ", data, "error: ", err)
 		response.ReturnCode = message.Fail
