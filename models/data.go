@@ -14,8 +14,8 @@ const (
 
 var NotImplementError = errors.New("have not implemented")
 var errorText = map[int32]string{
-	Success: "Thành công",
-	Fail:    "Có lỗi xảy ra khi xử lí yêu cầu",
+	Success: "operation success",
+	Fail:    "fail to process request",
 }
 
 func ErrorMessage(code int32) string {
