@@ -21,7 +21,7 @@ For example:
 }
 ```
 
-dqueue will delay message for 1*1 second, then push to message queue backend defined in configuration file, directive `queueType`. Then if subscriber fail to process message, eq: fail to store to database, fail to call or update an API, subscriber can then push back message into dqueue with `retryCount = currentRetryCount + 1`, message will be delay 1*2 second before published to queue backend, and so on
+dqueue will delay message for `1 * 1 = 1 second`, then push to message queue backend defined in configuration file, directive `queueType`. Then if subscriber fail to process message, eq: fail to store to database, fail to call or update an API, subscriber can then push back message into dqueue with `retryCount = currentRetryCount + 1`, message will be delay `1 * 2 = 2 seconds` before published to queue backend, and so on
 
 ```json
 {
