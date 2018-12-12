@@ -100,8 +100,9 @@ change configuration file according to your system:
 }
 ```
 where:
+    
     - **queueType** is queue server backend
-    - **dbType** is intermediate database server, currenly only mysql is supported
+    - **dbType** is intermediate database server, currenly `mysql` and `memory` support 
 
 
 To publish a message into dqueue
