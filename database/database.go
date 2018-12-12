@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/whatvn/dqueue/helper"
-	"github.com/whatvn/dqueue/models"
+	"errors"
 )
 
 type Database interface {
@@ -15,6 +15,6 @@ func NewDatabase() Database {
 	case "mysql":
 		return newMySqlDatabase()
 	default:
-		panic(message.NotImplementError)
+		panic(errors.New("not implement"))
 	}
 }

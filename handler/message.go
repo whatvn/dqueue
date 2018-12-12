@@ -113,6 +113,7 @@ func (md *MessageHandler) ForceMessage(c *gin.Context) {
 
 	var (
 		response = &delayQueue.ReturnCommon{}
+		msg message.Message
 	)
 
 	msgId, err := strconv.Atoi(c.Param("id"))
@@ -120,7 +121,8 @@ func (md *MessageHandler) ForceMessage(c *gin.Context) {
 		response.ReturnCode = message.Fail
 		goto Done
 	}
-	err = message.Force(int64(msgId))
+	msg = message.NewMessageById(int64(msgId))
+	err = msg.Force()
 	if err != nil {
 		log.Error("cannot update message timestamp, error: ", err)
 		response.ReturnCode = message.Fail

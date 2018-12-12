@@ -5,9 +5,10 @@ import (
 
 	"git.zapa.cloud/evn-gateway/DelayQueue/helper"
 	"github.com/astaxie/beego/orm"
+	"encoding/json"
 )
 
-type MySQLMessage struct {
+type MySqlMessage struct {
 	Id         int64  `json:"-" orm:"auto"`
 	TimeStamp  int64  `json:"timestamp"`
 	Data       string `json:"Message" orm:"type(text)"`
@@ -15,28 +16,51 @@ type MySQLMessage struct {
 	Delay      int    `json:"delay"`
 }
 
-const MYSQL = "mysql"
-
 func init() {
-	if helper.GetDbType() == MYSQL {
-		orm.RegisterModel(new(MySQLMessage))
-	}
+	orm.RegisterModel(new(MySqlMessage))
 }
 
-
-func Add(m *MySQLMessage) (id int64, err error) {
+func (m *MySqlMessage) Save() (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-func ByTime(now int64) (ml []*MySQLMessage, err error) {
+func (m *MySqlMessage) Force() (err error) {
 	o := orm.NewOrm()
-	cond := orm.NewCondition().And("time_stamp__lt", now)
+	if err = o.Read(m, "id"); err == nil {
+		m.TimeStamp = helper.Now() - 2
 
-	qs := o.QueryTable("MySQLMessage")
-	qs = qs.SetCond(cond).Limit(LIMIT_RANGE_MSG)
-	_, err = qs.All(&ml)
+		var num int64
+		if num, err = o.Update(m, "TimeStamp"); err == nil {
+			log.Info("Number of records updated in database:", num)
+		}
+	}
+	return
+}
+
+func (m *MySqlMessage) json() string {
+	b, _ := json.Marshal(m)
+	return string(b)
+}
+
+func (m *MySqlMessage) byte() []byte {
+	b, _ := json.Marshal(m)
+	return b
+}
+
+func (m *MySqlMessage) Delete() error {
+	o := orm.NewOrm()
+	num, err := o.Delete(m)
+	if err == nil {
+		log.Info("Number of records deleted in database:", num)
+	}
+	return err
+}
+
+func All() (ml []*MySqlMessage, err error) {
+	o := orm.NewOrm()
+	_, err = o.QueryTable("MySqlMessage").All(&ml)
 	if err != nil && err != orm.ErrNoRows {
 		return nil, err
 	}
@@ -44,9 +68,9 @@ func ByTime(now int64) (ml []*MySQLMessage, err error) {
 	return ml, nil
 }
 
-func All() (ml []*MySQLMessage, err error) {
+func List(offset int, limit int) (ml []*MySqlMessage, err error) {
 	o := orm.NewOrm()
-	_, err = o.QueryTable("MySQLMessage").All(&ml)
+	_, err = o.QueryTable("MySqlMessage").Offset(offset).Limit(limit).All(&ml)
 	if err != nil && err != orm.ErrNoRows {
 		return nil, err
 	}
@@ -54,19 +78,9 @@ func All() (ml []*MySQLMessage, err error) {
 	return ml, nil
 }
 
-func List(offset int, limit int) (ml []*MySQLMessage, err error) {
+func SearchBy(data string) ([]*MySqlMessage, error) {
 	o := orm.NewOrm()
-	_, err = o.QueryTable("MySQLMessage").Offset(offset).Limit(limit).All(&ml)
-	if err != nil && err != orm.ErrNoRows {
-		return nil, err
-	}
-
-	return ml, nil
-}
-
-func SearchBy(data string) ([]*MySQLMessage, error) {
-	o := orm.NewOrm()
-	var msgList []*MySQLMessage
+	var msgList []*MySqlMessage
 
 	num, err := o.Raw("select * from `Message` where data like ?", "%"+data+"%").QueryRows(&msgList)
 	if err != nil {
@@ -74,27 +88,4 @@ func SearchBy(data string) ([]*MySQLMessage, error) {
 	}
 	log.Info("Message nums: ", num)
 	return msgList, nil
-}
-
-func Force(id int64) (err error) {
-	o := orm.NewOrm()
-	msg := MySQLMessage{Id: id}
-	if err = o.Read(&msg, "id"); err == nil {
-		msg.TimeStamp = helper.Now() - 2
-
-		var num int64
-		if num, err = o.Update(&msg, "TimeStamp"); err == nil {
-			log.Info("Number of records updated in database:", num)
-		}
-	}
-	return
-}
-
-func Delete(m *MySQLMessage) error {
-	o := orm.NewOrm()
-	num, err := o.Delete(m)
-	if err == nil {
-		log.Info("Number of records deleted in database:", num)
-	}
-	return err
 }

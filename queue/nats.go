@@ -43,6 +43,7 @@ func NewNatsQueue() *natsQueue {
 
 func (queue *natsQueue) PublishMessage(message []byte) error {
 	err := queue.client.Publish("pendingqueue", message)
+	log.Info("publish message: ", string(message))
 	if err != nil {
 		log.Error("cannot publish message", string(message), "error:", err)
 		return err

@@ -10,8 +10,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-web"
-	"github.com/whatvn/dqueue/database"
 	"flag"
+	"os"
+	"os/signal"
+	"syscall"
+	"fmt"
+	"time"
+	"github.com/whatvn/dqueue/database"
+	"github.com/pkg/profile"
 )
 
 const (
@@ -21,8 +27,11 @@ const (
 )
 
 func init() {
-	var db = database.NewDatabase()
-	db.Init()
+	if helper.GetDbType() == "mysql" {
+		db := database.NewDatabase()
+		db.Init()
+	}
+
 	flag.Set("logtostderr", "true")
 	flag.Set("v", "2")
 	flag.Parse()
@@ -54,9 +63,22 @@ func WebServer() {
 }
 
 func main() {
+	defer profile.Start().Stop()
+
 	service := helper.NewServer(Domain, Consul, OpenTracing).GetService()
 	delayQueue.RegisterDelayQueueHandler(service.Server(), handler.NewMicroServiceHandler())
 	queueWorker := worker.NewWorker(helper.GetQueueType())
+
+	var gracefulStop = make(chan os.Signal)
+	signal.Notify(gracefulStop, syscall.SIGTERM)
+	signal.Notify(gracefulStop, syscall.SIGINT)
+	go func() {
+		sig := <-gracefulStop
+		fmt.Printf("caught sig: %+v", sig)
+		fmt.Println("Wait for 2 second to finish processing")
+		time.Sleep(2*time.Second)
+		os.Exit(0)
+	}()
 
 	go WebServer()
 

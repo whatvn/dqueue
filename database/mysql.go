@@ -13,7 +13,6 @@ import (
 
 type mysql struct {}
 
-
 func (database *mysql) Init() error {
 	var mysql DbConfig
 	helper.Config(&mysql, "hosts", "mysql")

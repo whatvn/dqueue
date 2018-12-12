@@ -19,6 +19,14 @@ func Now() int64 {
 }
 
 
+func NowNano() int64 {
+	loc, err := time.LoadLocation("Asia/Bangkok")
+	if err != nil {
+		panic(err)
+	}
+	return time.Now().In(loc).UnixNano()
+}
+
 func NowPlus(extraSecond int32) int64 {
 	return Now() + int64(extraSecond)
 }

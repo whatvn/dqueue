@@ -1,6 +1,9 @@
 package message
 
-import "errors"
+import (
+	"errors"
+	"encoding/json"
+)
 
 const (
 	Success = iota + 1
@@ -8,7 +11,12 @@ const (
 )
 
 const (
-	LIMIT_RANGE_MSG = 1
+	MYSQL = "mysql"
+	MEMORY = "memory"
+)
+
+const (
+	LIMIT_RANGE_MSG = 1000
 )
 
 
@@ -20,4 +28,20 @@ var errorText = map[int32]string{
 
 func ErrorMessage(code int32) string {
 	return errorText[code]
+}
+
+
+type TsRange struct {
+	Timestamp int64 `json:"timestamp"`
+}
+
+func NewTsRange(ts int64) TsRange  {
+	return TsRange{
+		Timestamp: ts,
+	}
+}
+
+func (t TsRange) ToJson() string  {
+	b, _ := json.Marshal(&t)
+	return string(b)
 }

@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 
-	"github.com/whatvn/dqueue/helper"
 	"github.com/whatvn/dqueue/models"
 	"github.com/whatvn/dqueue/protobuf"
 	log "github.com/golang/glog"
@@ -18,16 +17,10 @@ func NewMicroServiceHandler() delayQueue.DelayQueueHandler {
 }
 
 func (handler *MicroHandler) Publish(ctx context.Context, request *delayQueue.QueueRequest, response *delayQueue.QueueResponse) error {
-	newMessage := &message.Message{
-		TimeStamp:  helper.NowPlus(request.Delay*request.RetryCount),
-		Data:       request.Messsage,
-		RetryCount: int(request.RetryCount),
-		Delay:      int(request.Delay),
-	}
-
-	_, err := message.Add(newMessage)
+	msg := message.NewMessage(request)
+	_, err := msg.Save()
 	if err != nil {
-		log.Error("cannot add message to database, message: ", newMessage, "error: ", err)
+		log.Error("cannot add message to database, message: ", msg, "error: ", err)
 		response.ReturnCode = message.Fail
 		response.Message = message.ErrorMessage(message.Fail)
 		return nil
